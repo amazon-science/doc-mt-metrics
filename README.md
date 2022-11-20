@@ -22,6 +22,8 @@ The current repository containts code that extends the original metrics to docum
 * [BERTScore](bert_score/README.md) and 
 * [Prism](prism//README.md).
 
+In order to reproduce the results of our (or any other) metrics regarding the correlation with human annotations on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) we _strongly recommend_ using the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit.
+
 Bibtex Entry
 
 ```
