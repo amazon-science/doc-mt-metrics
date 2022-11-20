@@ -2,9 +2,7 @@
 
 If you use the code in your work, please cite: 
 
-Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric. Giorgos Vernikos, Brian Thompson, Prashant Mathur, and Marcello Federico. WMT 2022
-
-https://arxiv.org/abs/2209.13654
+[Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://arxiv.org/abs/2209.13654). Giorgos Vernikos, Brian Thompson, Prashant Mathur, and Marcello Federico. WMT 2022
 
 ## Overview
 
