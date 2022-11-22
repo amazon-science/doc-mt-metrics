@@ -13,8 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .regression.ctx_referenceless import CtxReferencelessRegression
-from .regression.ctx_regression_metric import CtxRegressionMetric
 from .regression.regression_metric import RegressionMetric
 from .ranking.ranking_metric import RankingMetric
 from .regression.referenceless import ReferencelessRegression
