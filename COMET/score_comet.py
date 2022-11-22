@@ -49,19 +49,6 @@ def add_context(txt1, docs, txt2=None):
 
 
 def main(args):
-    for testset, lp in [
-        # ("wmt21.tedtalks", "en-de", "refA", True),
-        #  ("wmt21.tedtalks", "zh-en", "refB", True),
-        # ("wmt21.tedtalks", "en-ru", "refA", False),
-        #  ("wmt21.news", "en-de", "refC", True), ("wmt21.news", "zh-en", "refB", True),
-        #  ("wmt21.news", "en-ru", "refA", True),
-        ("wmt21.news", "de-en"), ("wmt21.news", "cs-en"),
-        ("wmt21.news", "ja-en"), ("wmt21.news", "ru-en"),
-        ("wmt21.news", "ha-en"), ("wmt21.news", "is-en"),
-        ("wmt21.news", "en-zh"), ("wmt21.news", "en-ja"),
-        ("wmt21.news", "en-cs"), ("wmt21.news", "de-fr"),
-        ("wmt21.news", "fr-de")
-    ]:
 
         ref_name = pair2ref[(testset, lp)]
 
@@ -109,8 +96,8 @@ def main(args):
             scores['sys'][sysname] = [float(sys_score) if not args.seg else [float(x) for x in seg_score]]
             print('System-level metric for {} is : {}'.format(sysname, sys_score))
 
-        with open(scores_path, 'w') as fp:
-            json.dump(scores, fp)
+      with open(scores_path, 'w') as fp:
+          json.dump(scores, fp)
 
 
 if __name__ == '__main__':
