@@ -25,8 +25,6 @@ str2model = {
     "referenceless_regression_metric": ReferencelessRegression,
     "regression_metric": RegressionMetric,
     "ranking_metric": RankingMetric,
-    "ctx_regression_metric": CtxRegressionMetric,
-    "ctx_referenceless_regression_metric": CtxReferencelessRegression,
 }
 
 available_metrics = {
