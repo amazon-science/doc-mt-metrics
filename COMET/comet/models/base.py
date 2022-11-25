@@ -74,7 +74,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
     :param layerwise_decay: Learning rate % decay from top-to-bottom encoder layers.
     :param encoder_model: Encoder model to be used.
     :param pretrained_model: Pretrained model from Hugging Face.
-    :param pool: Pooling strategy to derive a sentence embedding ['cls', 'max', 'avg'].
+    :param pool: Pooling strategy to derive a sentence embedding ['cls', 'max', 'avg', 'part_avg'].
     :param layer: Encoder layer to be used ('mix' for pooling info from all layers.)
     :param dropout: Dropout used in the top-layers.
     :param batch_size: Batch size used during training.
@@ -102,6 +102,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
         validation_data: Optional[str] = None,
         load_weights_from_checkpoint: Optional[str] = None,
         class_identifier: Optional[str] = None,
+        doc: Optional[bool] = False
     ) -> None:
         super().__init__()
         self.save_hyperparameters(
@@ -140,6 +141,9 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
         if self.hparams.keep_embeddings_frozen:
             self.encoder.freeze_embeddings()
 
+        if self.hparams.document_level:
+            self.set_document_level()
+
         self.nr_frozen_epochs = self.hparams.nr_frozen_epochs
 
         if load_weights_from_checkpoint is not None:
@@ -153,6 +157,10 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
 
     def set_mc_dropout(self, value: bool):
         self.mc_dropout = value
+
+    def set_document_level(self):
+        """Function that extend COMET to the document level."""
+        self.doc = True
 
     def load_weights(self, checkpoint: str) -> None:
         """Function that loads the weights from a given checkpoint file.
@@ -292,7 +300,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
 
         elif self.hparams.pool == "max":
             sentemb = max_pooling(
-                input_ids, embeddings, self.encoder.tokenizer.pad_token_id
+                input_ids, embeddings, self.encoder.tokenizer.pad_token_id, self.encoder.tokenizer.sep_token_id, doc
             )
 
         elif self.hparams.pool == "avg":
@@ -301,14 +309,8 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
                 embeddings,
                 attention_mask,
                 self.encoder.tokenizer.pad_token_id,
-            )
-
-        elif self.hparams.pool == "part_avg":
-            sentemb = partial_average_pooling(
-                input_ids,
-                embeddings,
-                attention_mask,
-                self.encoder.tokenizer.pad_token_id,
+                self.encoder.tokenizer.sep_token_id, 
+                doc
             )
 
         elif self.hparams.pool == "cls":
