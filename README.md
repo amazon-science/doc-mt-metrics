@@ -11,11 +11,11 @@ In this work we extend state-of-the-art Machine Translation metrics, namely [Pri
 ![image](https://user-images.githubusercontent.com/30960204/202912888-9712b74b-e726-4450-a663-16bfc4cf0781.png)
 
 
-The extended metrics outperform their sentence-level counterparts in about 85% of the tested conditions and dramatically improve the ability of the corresponding model to handle discourse phenomena.
+The extended metrics outperform their sentence-level counterparts in about 85% of the tested conditions ([WMT 2021 Metrics Shared Task](https://wmt-metrics-task.github.io/) ) and dramatically improve the ability of the corresponding model to handle discourse phenomena.
 
 ## Usage
 
-The current repository containts code that extends the original metrics to document level by providing the option to encode additional context. The code is presented as an extension of the original codebase. For information on how to use each metric see the corresponding folder:
+The current repository contains code that extends the original MT metrics to document level by providing the option to encode additional context. The code is presented as an extension of the corresponding original codebase. For information on how to use each metric see the corresponding README:
 * [COMET/COMET-QE](COMET/README.md) 
 * [BERTScore](bert_score/README.md)  
 * [Prism](prism//README.md)
@@ -29,6 +29,10 @@ conda activate doc-metrics-env
 ## Reproducibility
 
 In order to reproduce the reuslts of the paper, regarding the correlation with human annotations of our (or any other) metrics on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) we _strongly recommend_ using the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit.
+
+## Acknowledgments
+
+We would like to thank the community for releasing their code! This repository contains code from [COMET](https://github.com/Unbabel/COMET), [BERTScore](https://github.com/Tiiiger/bert_score) and [Prism](https://github.com/thompsonb/prism) repositories.
 
 Bibtex Entry
 
