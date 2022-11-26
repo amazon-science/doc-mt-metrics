@@ -141,8 +141,10 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
         if self.hparams.keep_embeddings_frozen:
             self.encoder.freeze_embeddings()
 
-        if self.hparams.document_level:
-            self.set_document_level()
+        # for future doc-COMET research
+        if document_level in self.hparams:
+            if self.hparams.document_level:
+                self.set_document_level()
 
         self.nr_frozen_epochs = self.hparams.nr_frozen_epochs
 
