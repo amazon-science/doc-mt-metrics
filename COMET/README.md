@@ -31,7 +31,7 @@ comet-score -s src.de -t hyp1.en --doc --model wmt21-comet-qe-mqm
 ```
 > you can set `--gpus 0` to test on CPU.
 
-In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models but you can select another model/metric with the `--model` flag.
+In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models. To select a different model from the [available COMET models/metrics](https://unbabel.github.io/COMET/html/models.html) set the `--model` flag accordingly. 
 
 ### Python usage:
 
@@ -74,6 +74,3 @@ seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 - [Unbabel's Participation in the WMT20 Metrics Shared Task](https://aclanthology.org/2020.wmt-1.101/)
 
 - [COMET: A Neural Framework for MT Evaluation](https://www.aclweb.org/anthology/2020.emnlp-main.213)
-
-
-
