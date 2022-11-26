@@ -34,7 +34,7 @@ def main():
     parser.add_argument(
         "-c", "--cand", type=str, required=True, help="candidate (system outputs) file path or a string",
     )
-    parser.add_argument("--doc", type=bool, action="store_true", help="whether to evaluate at the document level")
+    parser.add_argument("--doc", action="store_true", help="whether to evaluate at the document level")
 
     args = parser.parse_args()
 
