@@ -82,6 +82,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
     :param validation_data: Path to a csv file containing the validation data.
     :param load_weights_from_checkpoint: Path to a checkpoint file.
     :param class_identifier: subclass identifier.
+    :param doc: Flag for document-level COMET.
     """
 
     def __init__(
@@ -143,8 +144,9 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
 
         # for future doc-COMET research
         if "document_level" in self.hparams:
-            if self.hparams.document_level:
-                self.set_document_level()
+            self.doc = self.hparams.document_level
+        else:
+            self.doc = False
 
         self.nr_frozen_epochs = self.hparams.nr_frozen_epochs
 

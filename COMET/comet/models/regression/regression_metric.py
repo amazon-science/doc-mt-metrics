@@ -49,6 +49,7 @@ class RegressionMetric(CometModel):
     :param hidden_sizes: Hidden sizes for the Feed Forward regression.
     :param activations: Feed Forward activation function.
     :param load_weights_from_checkpoint: Path to a checkpoint file.
+    :param doc: Flag for document-level COMET.
     """
 
     def __init__(
