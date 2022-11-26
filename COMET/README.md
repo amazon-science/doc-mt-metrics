@@ -6,11 +6,12 @@ This README describes how to use **Doc-COMET** an extension of the original COME
 
 This codebase is built upon the original [COMET code](https://github.com/Unbabel/COMET). For a detailed documentation of the COMET metric, including usage examples and instructions see the [Full Documentation](https://unbabel.github.io/COMET/html/index.html).
 
-To run Doc-COMET you will need to develop locally by installing [Poetry](https://python-poetry.org/docs/#installation) (`pip install poetry`) and run the following commands:
+To run Doc-COMET you will need to develop locally:
 ```bash
-git clone [https://github.com/Unbabel/COMET](https://github.com/GeorgeVern/doc-mt-metrics.git)
+git clone https://github.com/GeorgeVern/doc-mt-metrics.git
 cd COMET
-poetry install
+pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Scoring MT outputs:
