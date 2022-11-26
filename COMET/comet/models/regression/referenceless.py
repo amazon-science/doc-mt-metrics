@@ -69,6 +69,7 @@ class ReferencelessRegression(RegressionMetric):
         activations: str = "Tanh",
         final_activation: Optional[str] = None,
         load_weights_from_checkpoint: Optional[str] = None,
+        doc: Optional[bool] = False,
     ) -> None:
         super(RegressionMetric, self).__init__(
             nr_frozen_epochs,
@@ -86,6 +87,7 @@ class ReferencelessRegression(RegressionMetric):
             train_data,
             validation_data,
             load_weights_from_checkpoint,
+            doc,
             "referenceless_regression_metric",
         )
         self.save_hyperparameters()

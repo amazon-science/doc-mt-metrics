@@ -71,6 +71,7 @@ class RegressionMetric(CometModel):
         activations: str = "Tanh",
         final_activation: Optional[str] = None,
         load_weights_from_checkpoint: Optional[str] = None,
+        doc: Optional[bool] = False,
     ) -> None:
         super().__init__(
             nr_frozen_epochs,
@@ -88,6 +89,7 @@ class RegressionMetric(CometModel):
             train_data,
             validation_data,
             load_weights_from_checkpoint,
+            doc,
             "regression_metric",
         )
         self.save_hyperparameters()
