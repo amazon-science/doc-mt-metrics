@@ -35,7 +35,7 @@ In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models but you ca
 
 ### Python usage:
 
-In order to use Doc-COMET(-QE) with python simply run `model.set_document_level()` after loading the model.
+In order to use Doc-COMET(-QE) with python simply add `model.set_document_level()` after loading the model.
 
 ```python
 from comet import download_model, load_from_checkpoint
