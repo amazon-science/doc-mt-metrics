@@ -35,7 +35,7 @@ from torch import nn
 from torch.utils.data import DataLoader, RandomSampler, Sampler, Subset
 
 from .lru_cache import tensor_lru_cache
-from .pooling_utils import average_pooling, max_pooling, partial_average_pooling
+from .pooling_utils import average_pooling, max_pooling
 from .predict_pbar import PredictProgressBar
 
 
