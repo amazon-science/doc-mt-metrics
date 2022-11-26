@@ -60,7 +60,6 @@ seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
 
 ## Related Publications
-If you use COMET please cite our work! Also, don't forget to say which model you used to evaluate your systems.
 
 - [Searching for Cometinho: The Little Metric That Could -- EAMT22 Best paper award](https://aclanthology.org/2022.eamt-1.9/)
 
