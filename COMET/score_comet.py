@@ -58,7 +58,7 @@ def main(args):
         model_path = download_model(model_name)
         model = load_from_checkpoint(model_path)
         if args.context:
-            model.hparams.pool = "part_avg"
+            model.set_document_level()
 
         file_path = args.dir + "outs/{}/{}/".format(testset, lp)
         scores_path = args.dir + "scores/{}_{}_{}{}comet21{}_scores.json".format(testset, lp,
@@ -102,6 +102,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Score COMET models.')
+    parser.add_argument('--context', required=False, default=True, help='document- or sentence-level comet')
     parser.add_argument('--testset', required=False, default="wmt21.news", choices=['wmt21.news', 'wmt21.tedtalks'],
                         help='name of wmt campaign')
     parser.add_argument('--lp', required=False, default="", help='language pair')
@@ -111,7 +112,6 @@ if __name__ == '__main__':
                         help='if segment-level or system-level scores will be stored')
     parser.add_argument('--use_ref', required=False, default=True,
                         help='whether evaluation is reference-based or reference-free')
-    parser.add_argument('--context', required=False, default=True, help='document- or sentence-level comet')
 
     args = parser.parse_args()
 
