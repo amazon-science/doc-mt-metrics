@@ -20,11 +20,11 @@ def find_start_inds(
         tokens: torch.Tensor,
         separator_index: int,
 ) -> Union[List[int], torch.Tensor]:
-    """Function that returns a list containing the start index of each sentence for multi-sentence sequences and
+    """Function that returns a list containing the start indeces of each sentence for multi-sentence sequences and
        a new mask to omit all context sentences from the pooling function.
     :param mask: Padding mask [batch_size x seq_length]
     :param tokens: Word ids [batch_size x seq_length]
-    :param separator_ind: Separator token index.
+    :param separator_index: Separator token index.
     """
     start_inds = []
     ctx_mask = mask
