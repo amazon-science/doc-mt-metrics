@@ -20,6 +20,12 @@ The current repository containts code that extends the original metrics to docum
 * [BERTScore](bert_score/README.md)  
 * [Prism](prism//README.md)
 
+It is recommended to create an environment for this project 
+```bash
+conda create -n doc-metrics-env python=3.8 anaconda
+conda activate doc-metrics-env
+```
+
 ## Reproducibility
 
 In order to reproduce the reuslts of the paper, regarding the correlation with human annotations of our (or any other) metrics on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) we _strongly recommend_ using the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit.
