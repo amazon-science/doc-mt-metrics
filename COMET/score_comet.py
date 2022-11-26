@@ -3,9 +3,6 @@
 
 import argparse
 import os
-
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 import json
 from comet import download_model, load_from_checkpoint
 
@@ -50,68 +47,67 @@ def add_context(txt1, docs, txt2=None):
 
 def main(args):
 
-        ref_name = pair2ref[(testset, lp)]
+    ref_name = pair2ref[(args.testset, args.lp)]
 
-        print("Campaign: {}\n Language Pair: {}\n".format(testset, lp))
+    print("Campaign: {}\n Language Pair: {}\n".format(args.testset, args.lp))
 
-        model_name = "wmt21-comet-mqm" if args.use_ref else "wmt21-comet-qe-mqm"
-        model_path = download_model(model_name)
-        model = load_from_checkpoint(model_path)
+    model_name = "wmt21-comet-mqm" if args.use_ref else "wmt21-comet-qe-mqm"
+    model_path = download_model(model_name)
+    model = load_from_checkpoint(model_path)
+    if args.context:
+        model.set_document_level()
+
+    file_path = args.dir + "outs/{}/{}/".format(args.testset, args.lp)
+    scores_path = args.dir + "scores/{}_{}_{}{}comet21{}_scores.json".format(args.testset, args.lp,
+                                                                                "seg-" if args.seg else "",
+                                                                                "ctx" if args.context else "",
+                                                                                "-qe" if not args.use_ref else "")
+
+    print(scores_path)
+
+    scores = {level: {} for level in ['sys']}
+
+    src = open(args.dir + "ins/{}/{}/src".format(args.testset, args.lp), "r").read().splitlines()
+    ref = open(file_path + ref_name, "r").read().splitlines()
+    if args.context:
+        with open(args.dir + "docs/{}/{}/ids".format(args.testset, args.lp), "r") as fp:
+            docs = json.load(fp)
+        # add contexts to reference and source texts
+        ref = add_context(ref, docs)
+        src = add_context(src, docs)
+    for sysname in os.listdir(file_path):
+        print("evaluating {}".format(sysname))
+        cand = open(file_path + sysname, "r").read().splitlines()
         if args.context:
-            model.set_document_level()
-
-        file_path = args.dir + "outs/{}/{}/".format(testset, lp)
-        scores_path = args.dir + "scores/{}_{}_{}{}comet21{}_scores.json".format(testset, lp,
-                                                                                 "seg-" if args.seg else "",
-                                                                                 "ctx" if args.context else "",
-                                                                                 "-qe" if not args.use_ref else "")
-
-        print(scores_path)
-
-        scores = {level: {} for level in ['sys']}
-
-        src = open(args.dir + "ins/{}/{}/src".format(testset, lp), "r").read().splitlines()
-        ref = open(file_path + ref_name, "r").read().splitlines()
-        if args.context:
-            with open(args.dir + "docs/{}/{}/ids".format(testset, lp), "r") as fp:
-                docs = json.load(fp)
-            # add contexts to reference and source texts
-            ref = add_context(ref, docs)
-            src = add_context(src, docs)
-        for sysname in os.listdir(file_path):
-            print("evaluating {}".format(sysname))
-            cand = open(file_path + sysname, "r").read().splitlines()
-            if args.context:
-                # add reference/hypothesis context to the hypothesis for comet/comet-qe
-                if not args.use_ref:
-                    cand = add_context(cand, docs)
-                else:
-                    org_ref = open(file_path + ref_name, "r").read().splitlines()
-                    cand = add_context(cand, docs, org_ref)
-            if args.use_ref:
-                data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
+            # add reference/hypothesis context to the hypothesis for comet/comet-qe
+            if not args.use_ref:
+                cand = add_context(cand, docs)
             else:
-                data = [{"src": x, "mt": y} for x, y in zip(src, cand)]
-            seg_score, sys_score = model.predict(data, batch_size=32, gpus=1)
-            scores['sys'][sysname] = [float(sys_score) if not args.seg else [float(x) for x in seg_score]]
-            print('System-level metric for {} is : {}'.format(sysname, sys_score))
+                org_ref = open(file_path + ref_name, "r").read().splitlines()
+                cand = add_context(cand, docs, org_ref)
+        if args.use_ref:
+            data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
+        else:
+            data = [{"src": x, "mt": y} for x, y in zip(src, cand)]
+        seg_score, sys_score = model.predict(data, batch_size=32, gpus=1)
+        scores['sys'][sysname] = [float(sys_score) if not args.seg else [float(x) for x in seg_score]]
+        print('System-level metric for {} is : {}'.format(sysname, sys_score))
 
-      with open(scores_path, 'w') as fp:
-          json.dump(scores, fp)
+    with open(scores_path, 'w') as fp:
+        json.dump(scores, fp)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Score COMET models.')
-    parser.add_argument('--context', required=False, default=True, help='document- or sentence-level comet')
+    parser.add_argument('--context', required=True, type=bool, help='document- or sentence-level comet')
     parser.add_argument('--testset', required=False, default="wmt21.news", choices=['wmt21.news', 'wmt21.tedtalks'],
                         help='name of wmt campaign')
-    parser.add_argument('--lp', required=False, default="", help='language pair')
-    parser.add_argument('--dir', required=False, default="/home/ubuntu/Projects/myPrism/",
-                        help='directory where the scores will be saved')
-    parser.add_argument('--seg', required=False, default=False,
-                        help='if segment-level or system-level scores will be stored')
+    parser.add_argument('--lp', required=True, type=str, help='language pair')
+    parser.add_argument('--dir', required=True, type=str, help='directory where the scores will be saved')
     parser.add_argument('--use_ref', required=False, default=True,
                         help='whether evaluation is reference-based or reference-free')
+    parser.add_argument('--seg', required=False, default=False,
+                    help='if segment-level or system-level scores will be stored')
 
     args = parser.parse_args()
 
