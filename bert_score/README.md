@@ -33,7 +33,7 @@ In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models but you ca
 
 The [BERTScore](https://github.com/Tiiiger/bert_score) framework provides two APIs in order to use the BERTScore metric with python: an object-oriented one that caches the model and is recommended for multiple evaluations and a functional one that can be used for single evaluation. For more details see the [demo](https://github.com/Tiiiger/bert_score/blob/master/example/Demo.ipynb) provided by the authors.
 
-In order to use Doc-BERTScore simple add `doc=True` when scoring:
+In order to use Doc-BERTScore simple simply add `doc=True` when calling the `score` function:
 
 ```python
 from bert_score import BERTScorer
@@ -50,6 +50,8 @@ scorer = BERTScorer(lang="en", rescale_with_baseline=True)
 P, R, F1 = scorer.score(cands, refs, doc=True)
 ```
 ### Python usage (Function API):
+
+In order to use Doc-BERTScore simple simply add `doc=True` when calling the `score` function:
 
 ```python
 from bert_score import score
