@@ -302,7 +302,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
 
         elif self.hparams.pool == "max":
             sentemb = max_pooling(
-                input_ids, embeddings, self.encoder.tokenizer.pad_token_id, self.encoder.tokenizer.sep_token_id, doc
+                input_ids, embeddings, self.encoder.tokenizer.pad_token_id, self.encoder.tokenizer.sep_token_id, self.doc
             )
 
         elif self.hparams.pool == "avg":
@@ -312,7 +312,7 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
                 attention_mask,
                 self.encoder.tokenizer.pad_token_id,
                 self.encoder.tokenizer.sep_token_id, 
-                doc
+                self.doc
             )
 
         elif self.hparams.pool == "cls":
