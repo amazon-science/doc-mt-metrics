@@ -8,7 +8,7 @@ This codebase is built upon the original [BERTScore code](https://github.com/Tii
 
 To run Doc-BERTScore you will need to develop locally:
 ```bash
-git clone https://github.com/GeorgeVern/doc-mt-metrics.git
+git clone https://github.com/amazon-science/doc-mt-metrics.git
 cd BERTScore
 pip install .
 ```
