@@ -26,8 +26,7 @@ To score using the document-level BERTScore simply add the `--doc` flag:
 bert-score -r example/refs.txt -c example/hyps.txt --lang en --doc
 ```
 
-In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models but you can select another model/metric with the `--model` flag.
-
+In the paper we use`roberta-large` for X->En pairs and `bert-base-multilingual-cased` for En->X pairs (default at the time) but you can select another model with the `-m MODEL_TYPE` flag. See the [spreadsheet](https://docs.google.com/spreadsheets/d/1RKOVpselB98Nnh_EOC4A2BYn8_201tmPODpNWu4w7xI/edit?usp=sharing) provided by the authors of BERTScore for a full list of supported models.
 
 ### Python usage (Object-oriented API):
 
@@ -65,6 +64,8 @@ with open("bert_score/example/refs.txt") as f:
 # set doc=True to evaluate at the document level
 P, R, F1 = score(cands, refs, lang="en", verbose=True, doc=True)
 ```
+
+To use another model set the flag `model_type=MODEL_TYPE` when calling `score` function.
 
 
 ## Related Publications
