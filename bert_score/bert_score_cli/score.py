@@ -34,6 +34,7 @@ def main():
     parser.add_argument(
         "-c", "--cand", type=str, required=True, help="candidate (system outputs) file path or a string",
     )
+    parser.add_argument("-doc", type=bool, action="store_true", help="whether to evaluate at the document level")
 
     args = parser.parse_args()
 
@@ -69,6 +70,7 @@ def main():
         rescale_with_baseline=args.rescale_with_baseline,
         baseline_path=args.baseline_path,
         use_fast_tokenizer=args.use_fast_tokenizer,
+        doc = args.doc
     )
     avg_scores = [s.mean(dim=0) for s in all_preds]
     P = avg_scores[0].cpu().item()
