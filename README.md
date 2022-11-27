@@ -1,8 +1,5 @@
 ## Document Level MT Metrics
 
-If you use the code in your work, please cite: 
-
-[Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf). Giorgos Vernikos, Brian Thompson, Prashant Mathur, and Marcello Federico. WMT 2022
 
 ## Overview
 
@@ -34,18 +31,19 @@ In order to reproduce the reuslts of the paper, regarding the correlation with h
 
 We would like to thank the community for releasing their code! This repository contains code from [COMET](https://github.com/Unbabel/COMET), [BERTScore](https://github.com/Tiiiger/bert_score) and [Prism](https://github.com/thompsonb/prism) repositories.
 
-Bibtex Entry
+
+If you use the code in your work, please cite [Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf):
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2209.13654,
-  doi = {10.48550/ARXIV.2209.13654},
-  url = {https://arxiv.org/abs/2209.13654},
-  author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
-  keywords = {Computation and Language (cs.CL), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@inproceedings{easy_doc_mt
+    title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
+    author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
+    booktitle = "Proceedings of the Seventh Conference on Machine Translation",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates",
+    publisher = "Association for Computational Linguistics",
+    url = "https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf",
 }
 ```
 
