@@ -1,5 +1,4 @@
-## Document Level MT Metrics
-
+# Embarrassingly Easy Document-Level MT Metrics
 
 ## Overview
 
@@ -31,6 +30,8 @@ In order to reproduce the reuslts of the paper, regarding the correlation with h
 
 We would like to thank the community for releasing their code! This repository contains code from [COMET](https://github.com/Unbabel/COMET), [BERTScore](https://github.com/Tiiiger/bert_score) and [Prism](https://github.com/thompsonb/prism) repositories.
 
+
+## Paper
 
 If you use the code in your work, please cite [Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf):
 
