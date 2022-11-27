@@ -43,7 +43,7 @@ class RankingMetric(CometModel):
     :param layerwise_decay: Learning rate % decay from top-to-bottom encoder layers.
     :param encoder_model: Encoder model to be used.
     :param pretrained_model: Pretrained model from Hugging Face.
-    :param pool: Pooling strategy to derive a sentence embedding ['cls', 'max', 'avg'].
+    :param pool: Pooling strategy to derive a sentence embedding ['cls', 'max', 'avg', 'part_avg'].
     :param layer: Encoder layer to be used ('mix' for pooling info from all layers.)
     :param dropout: Dropout used in the top-layers.
     :param batch_size: Batch size used during training.

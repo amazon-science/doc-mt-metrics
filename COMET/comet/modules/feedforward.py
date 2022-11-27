@@ -69,38 +69,3 @@ class FeedForward(nn.Module):
 
     def forward(self, in_features: torch.Tensor) -> torch.Tensor:
         return self.ff(in_features)
-
-
-class Gate(nn.Module):
-    """
-    Gating Mechanism.
-
-    :param in_dim: Number input features.
-    :param out_dim: Number of output features. Default is just a score.
-    :param final_activation: Name of the final activation function if any.
-    :param dropout: dropout to be used in the hidden layers.
-    """
-
-    def __init__(
-        self,
-        in_dim: int,
-        out_dim: int = 1,
-        final_activation: str = "Sigmoid",
-        dropout: float = 0.1,
-    ) -> None:
-        super().__init__()
-        modules = []
-        modules.append(nn.Linear(in_dim, int(out_dim)))
-        # modules.append(nn.Dropout(dropout))
-        modules.append(self.build_activation(final_activation))
-
-        self.ff = nn.Sequential(*modules)
-
-    def build_activation(self, activation: str) -> nn.Module:
-        if hasattr(nn, activation.title()):
-            return getattr(nn, activation.title())()
-        else:
-            raise Exception(f"{activation} is not a valid activation function!")
-
-    def forward(self, in_features: torch.Tensor) -> torch.Tensor:
-        return self.ff(in_features)

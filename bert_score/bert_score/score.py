@@ -43,7 +43,8 @@ def score(
     return_hash=False,
     rescale_with_baseline=False,
     baseline_path=None,
-    use_fast_tokenizer=False
+    use_fast_tokenizer=False,
+    doc=False
 ):
     """
     BERTScore metric.
@@ -69,6 +70,8 @@ def score(
         - :param: `rescale_with_baseline` (bool): rescale bertscore with pre-computed baseline
         - :param: `baseline_path` (str): customized baseline file
         - :param: `use_fast_tokenizer` (bool): `use_fast` parameter passed to HF tokenizer
+        - :param: `doc` (bool): flag for sentence vs. document-level evaluation
+
 
     Return:
         - :param: `(P, R, F)`: each is of shape (N); N = number of input
@@ -138,6 +141,7 @@ def score(
         device=device,
         batch_size=batch_size,
         all_layers=all_layers,
+        doc=doc
     ).cpu()
 
     if ref_group_boundaries is not None:

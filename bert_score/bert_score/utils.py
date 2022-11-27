@@ -386,8 +386,7 @@ def collate_idf(arr, tokenizer, idf_dict, device="cuda:0"):
 def collate_idf_with_context(arr, tokenizer, idf_dict, device="cuda:0"):
     """
     Helper function that pads a list of sentences to have the same length and
-    loads idf score for words in the sentences. In addition it ignores context words when calculating
-    the BERTScore.
+    loads idf score for words in the sentences. In also ignores context words when calculating the BERTScore.
 
     Args:
         - :param: `arr` (list of str): sentences to process.
@@ -427,7 +426,7 @@ def collate_idf_with_context(arr, tokenizer, idf_dict, device="cuda:0"):
 
 
 def get_bert_embedding(all_sens, model, tokenizer, idf_dict, batch_size=-1, device="cuda:0", all_layers=False,
-                       context=False):
+                       doc=False):
     """
     Compute BERT embedding in batches.
 
@@ -438,9 +437,10 @@ def get_bert_embedding(all_sens, model, tokenizer, idf_dict, batch_size=-1, devi
         - :param: `idf_dict` (dict) : mapping a word piece index to its
                                inverse document frequency
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
+        - :param: `doc` (bool): flag for sentence- vs. document-level evaluation
     """
 
-    if context:
+    if doc:
         padded_sens, padded_idf, lens, mask = collate_idf_with_context(all_sens, tokenizer, idf_dict, device=device)
     else:
         padded_sens, padded_idf, lens, mask = collate_idf(all_sens, tokenizer, idf_dict, device=device)
@@ -543,7 +543,7 @@ def greedy_cos_idf(ref_embedding, ref_masks, ref_idf, hyp_embedding, hyp_masks, 
 
 def bert_cos_score_idf(
         model, refs, hyps, tokenizer, idf_dict, verbose=False, batch_size=64, device="cuda:0", all_layers=False,
-        context=False,
+        doc=False,
 ):
     """
     Compute BERTScore.
@@ -558,6 +558,7 @@ def bert_cos_score_idf(
         - :param: `verbose` (bool): turn on intermediate status update
         - :param: `batch_size` (int): bert score processing batch size
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
+        - :param: `doc1 (bool): flag for sentence- vs. document-level evaluation
     """
     preds = []
 
@@ -574,7 +575,7 @@ def bert_cos_score_idf(
     for batch_start in iter_range:
         sen_batch = sentences[batch_start: batch_start + batch_size]
         embs, masks, padded_idf = get_bert_embedding(
-            sen_batch, model, tokenizer, idf_dict, device=device, all_layers=all_layers, context=context
+            sen_batch, model, tokenizer, idf_dict, device=device, all_layers=all_layers, doc=doc
         )
         embs = embs.cpu()
         masks = masks.cpu()

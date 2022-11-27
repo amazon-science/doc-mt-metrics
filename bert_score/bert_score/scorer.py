@@ -172,11 +172,12 @@ class BERTScorer:
 
         self._idf_dict = get_idf_dict(sents, self._tokenizer, nthreads=self.nthreads)
 
-    def score(self, cands, refs, verbose=False, batch_size=64, return_hash=False, context=False):
+    def score(self, cands, refs, verbose=False, batch_size=64, return_hash=False, doc=False):
         """
         Args:
             - :param: `cands` (list of str): candidate sentences
             - :param: `refs` (list of str or list of list of str): reference sentences
+            - :param: `doc` (bool): flag for sentence vs. document-level evaluation
 
         Return:
             - :param: `(P, R, F)`: each is of shape (N); N = number of input
@@ -220,7 +221,7 @@ class BERTScorer:
             device=self.device,
             batch_size=batch_size,
             all_layers=self.all_layers,
-            context=context,
+            doc=doc,
         ).cpu()
 
         if ref_group_boundaries is not None:

@@ -37,14 +37,11 @@ from comet.models import (
     RankingMetric,
     ReferencelessRegression,
     RegressionMetric,
-    CtxReferencelessRegression,
 )
 from jsonargparse import ActionConfigFile, ArgumentParser, namespace_to_dict
 from pytorch_lightning import seed_everything
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.trainer.trainer import Trainer
-
-from comet.models.regression.ctx_regression_metric import CtxRegressionMetric
 
 
 def train_command() -> None:
@@ -58,12 +55,8 @@ def train_command() -> None:
     parser.add_argument("--cfg", action=ActionConfigFile)
     parser.add_class_arguments(CometModel, "model")
     parser.add_subclass_arguments(RegressionMetric, "regression_metric")
-    parser.add_subclass_arguments(CtxRegressionMetric, "ctx_regression_metric")
     parser.add_subclass_arguments(
         ReferencelessRegression, "referenceless_regression_metric"
-    )
-    parser.add_subclass_arguments(
-        CtxReferencelessRegression, "ctx_referenceless_regression_metric"
     )
     parser.add_subclass_arguments(RankingMetric, "ranking_metric")
     parser.add_subclass_arguments(EarlyStopping, "early_stopping")
@@ -92,13 +85,6 @@ def train_command() -> None:
             )
         )
         model = RegressionMetric(**namespace_to_dict(cfg.regression_metric.init_args))
-    elif cfg.ctx_regression_metric is not None:
-        print(
-            json.dumps(
-                cfg.ctx_regression_metric.init_args, indent=4, default=lambda x: x.__dict__
-            )
-        )
-        model = CtxRegressionMetric(**namespace_to_dict(cfg.ctx_regression_metric.init_args))
     elif cfg.referenceless_regression_metric is not None:
         print(
             json.dumps(
@@ -109,17 +95,6 @@ def train_command() -> None:
         )
         model = ReferencelessRegression(
             **namespace_to_dict(cfg.referenceless_regression_metric.init_args)
-        )
-    elif cfg.ctx_referenceless_regression_metric is not None:
-        print(
-            json.dumps(
-                cfg.ctx_referenceless_regression_metric.init_args,
-                indent=4,
-                default=lambda x: x.__dict__,
-            )
-        )
-        model = CtxReferencelessRegression(
-            **namespace_to_dict(cfg.ctx_referenceless_regression_metric.init_args)
         )
     elif cfg.ranking_metric is not None:
         print(
