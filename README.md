@@ -1,14 +1,10 @@
-## Document Level MT Metrics
-
-If you use the code in your work, please cite: 
-
-[Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://arxiv.org/abs/2209.13654). Giorgos Vernikos, Brian Thompson, Prashant Mathur, and Marcello Federico. WMT 2022
+# Embarrassingly Easy Document-Level MT Metrics
 
 ## Overview
 
 In this work we extend state-of-the-art Machine Translation metrics, namely [Prism](https://github.com/thompsonb/prism), [COMET](https://github.com/Unbabel/COMET),  [COMET-QE](https://github.com/Unbabel/COMET) and [BERTScore](https://github.com/Tiiiger/bert_score) to the document level. Our approach is _embarassingly simple_: instead of encoding only the hypothesis and reference we also encode the previous reference sentences as context. We still compute the metric score at the sentence level but also attend to previous context.
 
-![image](https://user-images.githubusercontent.com/30960204/202912888-9712b74b-e726-4450-a663-16bfc4cf0781.png)
+![image](media/bertscore.png)
 
 
 The extended metrics outperform their sentence-level counterparts in about 85% of the tested conditions ([WMT 2021 Metrics Shared Task](https://wmt-metrics-task.github.io/) ) and dramatically improve the ability of the corresponding model to handle discourse phenomena.
@@ -34,18 +30,21 @@ In order to reproduce the reuslts of the paper, regarding the correlation with h
 
 We would like to thank the community for releasing their code! This repository contains code from [COMET](https://github.com/Unbabel/COMET), [BERTScore](https://github.com/Tiiiger/bert_score) and [Prism](https://github.com/thompsonb/prism) repositories.
 
-Bibtex Entry
+
+## Paper
+
+If you use the code in your work, please cite [Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf):
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2209.13654,
-  doi = {10.48550/ARXIV.2209.13654},
-  url = {https://arxiv.org/abs/2209.13654},
-  author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
-  keywords = {Computation and Language (cs.CL), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@inproceedings{easy_doc_mt
+    title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
+    author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
+    booktitle = "Proceedings of the Seventh Conference on Machine Translation",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates",
+    publisher = "Association for Computational Linguistics",
+    url = "https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf",
 }
 ```
 
