@@ -9,7 +9,7 @@ This codebase is built upon the original [COMET code](https://github.com/Unbabel
 To run Doc-COMET you will need to develop locally:
 ```bash
 git clone https://github.com/amazon-science/doc-mt-metrics.git
-cd COMET
+cd doc-mt-metrics/COMET
 pip install -r requirements.txt
 pip install -e .
 ```
