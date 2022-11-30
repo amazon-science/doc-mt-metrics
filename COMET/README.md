@@ -69,9 +69,9 @@ model = load_from_checkpoint(model_path)
 model.set_document_level()
 
 # add contexts to reference, source and hypothesis texts
-src = add_context(org_txt=src, context=src, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
-cand = add_context(org_txt=cand, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
-ref = add_context(org_txt=ref, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
+src = add_context(org_txt=src, context=src, docs=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
+cand = add_context(org_txt=cand, context=ref, docs=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
+ref = add_context(org_txt=ref, context=ref, docs=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 
 data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
 
