@@ -24,7 +24,25 @@ comet-score -s src.de -t hyp1.en -r ref.en --model wmt21-comet-mqm
 comet-score -s src.de -t hyp1.en --model wmt21-comet-qe-mqm
 ```
 
-To score using the document-level COMET/COMET-QE simply add the `--doc` flag:
+To evaluate at the document level we need to know the number of documents per file. This can either be a list of strings where each string is a document name, i.e. `[doc1, doc1, doc1, doc2, doc2, doc3]`, or just a list of indices, i.e. `[1, 1, 1, 2, 3, 3]`. 
+
+For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
+```bash
+sacrebleu -t wmt21 -l en-de --echo docid > docid.en-de
+```
+
+Next, we have to add context to each of the source, hypothesis and target files:
+```bash
+python add_context.py --f1 src.de --doc_ids docid.en-de
+python add_context.py --f1 ref.en --doc_ids docid.en-de
+python add_context.py --f1 hyp1.en --f2 ref.en --doc_ids docid.en-de
+```
+> the window size can be changed by setting the `--ws` flag (default=2). 
+> If you don't want to overwrite the original files set the `--name` flag accordingly.
+
+(!) Note that we use the reference context for the hypothesis in the paper.
+
+Finally, add the `--doc` flag to the `comet-score` command:
 ```bash
 comet-score -s src.de -t hyp1.en -r ref.en --doc --model wmt21-comet-mqm
 comet-score -s src.de -t hyp1.en --doc --model wmt21-comet-qe-mqm
@@ -39,6 +57,7 @@ In order to use Doc-COMET(-QE) with python simply add `model.set_document_level(
 
 ```python
 from comet import download_model, load_from_checkpoint
+from add_context import add_context
 
 model_path = download_model("wmt21-comet-mqm")
 model = load_from_checkpoint(model_path)
@@ -46,18 +65,13 @@ model = load_from_checkpoint(model_path)
 # this command allows us to encode context for document-level evaluation
 model.set_document_level()
 
-data = [
-    {
-        "src": "Dem Feuer konnte Einhalt geboten werden",
-        "mt": "The fire could be stopped",
-        "ref": "They were able to control the fire."
-    },
-    {
-        "src": "Schulen und Kindergärten wurden eröffnet.",
-        "mt": "Schools and kindergartens were open",
-        "ref": "Schools and kindergartens opened"
-    }
-]
+data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
+
+# add contexts to reference, source and hypothesis texts
+src = add_context(org_txt=src, context=src, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
+cand = add_context(org_txt=cand, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
+ref = add_context(org_txt=ref, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
+            
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
 
