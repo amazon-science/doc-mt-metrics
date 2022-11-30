@@ -10,7 +10,7 @@ from add_context import add_context
 
 
 def main(args):
-    scorer = BERTScorer(lang=lp.split("-")[-1], rescale_with_baseline=False)
+    scorer = BERTScorer(lang=args.lang, rescale_with_baseline=False)
 
     scores_path = args.dir + "scores/{}bertscore_scores.json".format("doc-" if args.context else "")
 
@@ -22,8 +22,8 @@ def main(args):
     if args.doc:
         doc_lens = open(args.doc_lens, "r").read().splitlines()
 
-        cand = add_context(org_txt=cand, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
-        ref = add_context(org_txt=ref, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
+        cand = add_context(org_txt=cand, context=ref, docs=doc_lens)
+        ref = add_context(org_txt=ref, context=ref, docs=doc_lens)
 
     P, R, F1 = scorer.score(cand, ref, context=args.doc)
     seg_score = F1.cpu().numpy()
