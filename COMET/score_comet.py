@@ -2,35 +2,9 @@
 # Modifications Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 import argparse
-import os
 import json
-from typing import List
-
+from add_context import add_context
 from comet import download_model, load_from_checkpoint
-
-
-def add_context(org_txt: List[str], context: List[str], docs: List[int], sep_token: str = "</s>",
-                ws: int = 2) -> List[int]:
-    """Function that adds the previous sentences as context to the current sentence, respecting document boundaries
-    :param org_txt: the original text
-    :param context: the text from which the context will be taken (same as org_txt for source/reference)
-    :param docs: the size of each document in the text
-    :param sep_token: the separator token of the tokenizer for the specific model
-    :param ws: the window size, maximum of the previous sentences to be considered as context
-    :return: the original text augmented with context
-    """
-    k = 0
-    l = 0
-    augm_txt = []
-    for i, line in enumerate(org_txt):
-        if k < docs[l]:
-            context = context[i - min(k, ws):i]
-            augm_txt.append(" {} ".format(sep_token).join(context + [org_txt[i]]))
-        else:
-            k = -1
-            l += 1
-        k += 1
-    return augm_txt
 
 
 def main(args):
@@ -66,7 +40,7 @@ def main(args):
         data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
     else:
         data = [{"src": x, "mt": y} for x, y in zip(src, cand)]
-        
+
     seg_score, sys_score = model.predict(data, batch_size=32, gpus=1)
     scores[args.level] = [float(sys_score) if not args.seg else [float(x) for x in seg_score]]
 
