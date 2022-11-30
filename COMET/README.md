@@ -59,19 +59,22 @@ In order to use Doc-COMET(-QE) with python simply add `model.set_document_level(
 from comet import download_model, load_from_checkpoint
 from add_context import add_context
 
+with open("bert_score/example/docids.txt") as f:
+    doc_ids = [line.strip() for line in f]
+
 model_path = download_model("wmt21-comet-mqm")
 model = load_from_checkpoint(model_path)
 
 # this command allows us to encode context for document-level evaluation
 model.set_document_level()
 
-data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
-
 # add contexts to reference, source and hypothesis texts
 src = add_context(org_txt=src, context=src, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
 cand = add_context(org_txt=cand, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
 ref = add_context(org_txt=ref, context=ref, docs=doc_lens, sep_token=model.encoder.tokenizer.sep_token)
-            
+
+data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
+
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
 
