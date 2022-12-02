@@ -39,7 +39,7 @@ optional arguments:
                         Path to the directory where models will be stored. By default its saved in ~/.cache/torch/unbabel_comet/ (default: null)
   --mc_dropout MC_DROPOUT
                         Number of inference runs for each sample in MC Dropout. (type: Union[bool, int], default: False)
-  --doc DOC             Evaluation is done at the document level. (default: False)                 
+  --doc DOC             File containing document IDs to evaluate at the document level. (default: null)                 
   --seed_everything SEED_EVERYTHING
                         Prediction seed. (type: int, default: 12)
   --num_workers NUM_WORKERS
@@ -111,7 +111,7 @@ def score_command() -> None:
         default=False,
         help="Number of inference runs for each sample in MC Dropout.",
     )
-    parser.add_argument("--doc", type=Path_fr, help="File containing document IDs to evaluate at the document level.",)
+    parser.add_argument("--doc", type=Path_fr, help="File containing document IDs to evaluate at the document level.", default=None)
     parser.add_argument(
         "--seed_everything",
         help="Prediction seed.",
