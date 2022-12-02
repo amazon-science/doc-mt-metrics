@@ -17,11 +17,12 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Get some files to score
-
+### Get some files to score
+```bash
 sacrebleu -t wmt21 -l de-en --echo src | head -n 20 > src.de
 sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > ref.en
 sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > hyp.en  # put your system output here
+```
 
 To evaluate at the document level we need to know where the document boundaries are in the test set, so that we only use valid context. This is passed in as a file where each line contains a document ID.
 
@@ -30,7 +31,7 @@ For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost
 sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids
 ```
 
-### Command Line usage:
+### Command Line usage
 
 Comet and comet-qe are run just as before, except we, add the `--doc` flag to the `comet-score` command:
 ```bash
