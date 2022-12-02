@@ -10,44 +10,34 @@ To run Doc-COMET you will need to develop locally:
 ```bash
 git clone https://github.com/amazon-science/doc-mt-metrics.git
 cd doc-mt-metrics/COMET
+conda create -n doc-metrics-env python=3.8 anaconda 
+conda activate doc-metrics-env
+pip install --upgrade pip
 pip install -r requirements.txt
 pip install -e .
 ```
 
-## Scoring MT outputs:
+## Get some files to score
 
-### Command Line usage:
+sacrebleu -t wmt21 -l de-en --echo src | head -n 20 > src.de
+sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > ref.en
+sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > hyp.en  # put your system output here
 
-To score using the original, sentence-level COMET/COMET-QE models:
-```bash
-comet-score -s src.de -t hyp1.en -r ref.en --model wmt21-comet-mqm
-comet-score -s src.de -t hyp1.en --model wmt21-comet-qe-mqm
-```
-
-To evaluate at the document level we need to know the number of documents per file. This can either be a list of strings where each string is a document name, i.e. `[doc1, doc1, doc1, doc2, doc2, doc3]`, or just a list of indices, i.e. `[1, 1, 1, 2, 3, 3]`. 
+To evaluate at the document level we need to know where the document boundaries are in the test set, so that we only use valid context. This is passed in as a file where each line contains a document ID.
 
 For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
 ```bash
-sacrebleu -t wmt21 -l en-de --echo docid > docid.en-de
+sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids
 ```
 
-Next, we have to add context to each of the source, hypothesis and target files:
+### Command Line usage:
+
+Comet and comet-qe are run just as before, except we, add the `--doc` flag to the `comet-score` command:
 ```bash
-python add_context.py --f1 src.de --doc_ids docid.en-de
-python add_context.py --f1 ref.en --doc_ids docid.en-de
-python add_context.py --f1 hyp1.en --f2 ref.en --doc_ids docid.en-de
+comet-score -s src.de -t hyp.en -r ref.en --doc docids --model wmt21-comet-mqm
+comet-score -s src.de -t hyp.en --doc docids --model wmt21-comet-qe-mqm
 ```
-> the window size can be changed by setting the `--ws` flag (default=2). 
-> If you don't want to overwrite the original files set the `--name` flag accordingly.
-
-(!) Note that we use the reference context for the hypothesis in the paper.
-
-Finally, add the `--doc` flag to the `comet-score` command:
-```bash
-comet-score -s src.de -t hyp1.en -r ref.en --doc --model wmt21-comet-mqm
-comet-score -s src.de -t hyp1.en --doc --model wmt21-comet-qe-mqm
-```
-> you can set `--gpus 0` to test on CPU.
+> Note: you can set `--gpus 0` to run on CPU.
 
 In the paper we use `wmt21-comet-mqm` and `wmt21-comet-qe-mqm` models. To select a different model from the [available COMET models/metrics](https://unbabel.github.io/COMET/html/models.html) set the `--model` flag accordingly. 
 
@@ -78,16 +68,19 @@ data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, cand, ref)]
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
 
-## Related Publications
+## Paper
 
-- [Searching for Cometinho: The Little Metric That Could -- EAMT22 Best paper award](https://aclanthology.org/2022.eamt-1.9/)
+If you use the code in your work, please cite [Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf):
 
-- [Are References Really Needed? Unbabel-IST 2021 Submission for the Metrics Shared Task](http://statmt.org/wmt21/pdf/2021.wmt-1.111.pdf)
-
-- [Uncertainty-Aware Machine Translation Evaluation](https://aclanthology.org/2021.findings-emnlp.330/) 
-
-- [COMET - Deploying a New State-of-the-art MT Evaluation Metric in Production](https://www.aclweb.org/anthology/2020.amta-user.4)
-
-- [Unbabel's Participation in the WMT20 Metrics Shared Task](https://aclanthology.org/2020.wmt-1.101/)
-
-- [COMET: A Neural Framework for MT Evaluation](https://www.aclweb.org/anthology/2020.emnlp-main.213)
+```
+@inproceedings{easy_doc_mt
+    title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
+    author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
+    booktitle = "Proceedings of the Seventh Conference on Machine Translation",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates",
+    publisher = "Association for Computational Linguistics",
+    url = "https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf",
+}
+```
