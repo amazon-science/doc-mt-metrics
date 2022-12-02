@@ -64,6 +64,7 @@ from jsonargparse.typing import Path_fr
 from pytorch_lightning import seed_everything
 from sacrebleu.utils import get_reference_files, get_source_file
 
+from add_context import add_context
 
 def score_command() -> None:
     parser = ArgumentParser(description="Command for scoring MT systems.")
@@ -110,9 +111,7 @@ def score_command() -> None:
         default=False,
         help="Number of inference runs for each sample in MC Dropout.",
     )
-    parser.add_argument(
-        "--doc", action="store_true", help="Evaluate at the document level.",
-    )
+    parser.add_argument("--doc", type=Path_fr, help="File containing document IDs to evaluate at the document level.",)
     parser.add_argument(
         "--seed_everything",
         help="Prediction seed.",
@@ -187,24 +186,46 @@ def score_command() -> None:
         )
     
     if cfg.doc:
+        print('Running at document level')
+        with open(cfg.doc(), encoding="utf-8") as fp:
+            doc_ids = [line.strip() for line in fp.readlines()]
         model.set_document_level()
+    else:
+        print('Running at sentence level')
 
     if not cfg.disable_cache:
         model.set_embedding_cache()
 
     with open(cfg.sources(), encoding="utf-8") as fp:
         sources = [line.strip() for line in fp.readlines()]
+        if cfg.doc:
+            print('Adding source context to source')
+            sources = add_context(orig_txt=sources, context=sources, doc_ids=doc_ids)
 
+    if not model.is_referenceless():
+        with open(cfg.references(), encoding="utf-8") as fp:
+            references = [line.strip() for line in fp.readlines()]
+            if cfg.doc:
+                print('Adding reference context to reference')
+                references = add_context(orig_txt=references, context=references, doc_ids=doc_ids)
+            
     translations = []
     for path_fr in cfg.translations:
         with open(path_fr(), encoding="utf-8") as fp:
-            translations.append([line.strip() for line in fp.readlines()])
+            single_translation = [line.strip() for line in fp.readlines()]
+            if cfg.doc:
+                if model.is_referenceless():
+                    print('Adding MT context to MT')
+                    single_translation = add_context(orig_txt=single_translation, context=single_translation, doc_ids=doc_ids)
+                else:
+                    print('Adding reference context to MT')
+                    single_translation = add_context(orig_txt=single_translation, context=references, doc_ids=doc_ids)
+
+            translations.append(single_translation)
 
     if model.is_referenceless():
         data = {"src": [sources for _ in translations], "mt": translations}
     else:
-        with open(cfg.references(), encoding="utf-8") as fp:
-            references = [line.strip() for line in fp.readlines()]
         data = {
             "src": [sources for _ in translations],
             "mt": translations,
