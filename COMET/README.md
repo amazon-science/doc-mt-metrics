@@ -28,7 +28,7 @@ To evaluate at the document level we need to know where the document boundaries 
 
 For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
 ```bash
-sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids
+sacrebleu -t wmt21 -l de-en --echo docid | head -n 20 > docids
 ```
 
 ### Command Line usage
