@@ -35,8 +35,8 @@ def main(args):
         if args.doc:
             doc_ids = open(args.dir + "/docids", "r").read().splitlines()
 
-            cand = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=scorer.sep_token)
-            ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=model._tokenizer.sep_token)
+            cand = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
+            ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
 
         P, R, F1 = scorer.score(cand, ref, context=args.doc)
         seg_score = F1.cpu().numpy()
