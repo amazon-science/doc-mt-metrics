@@ -61,12 +61,12 @@ with open("bert_score/example/refs.txt") as f:
     
 with open("bert_score/example/docids.txt") as f:
     doc_ids = [line.strip() for line in f]
-    
-# add contexts to reference and hypothesis texts
-cands = add_context(org_txt=cand, context=ref, docs=doc_ids)
-refs = add_context(org_txt=ref, context=ref, docs=doc_ids)
 
 scorer = BERTScorer(lang="en", rescale_with_baseline=True)
+
+# add contexts to reference and hypothesis texts
+cands = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
+refs = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
 
 # set doc=True to evaluate at the document level
 P, R, F1 = scorer.score(cands, refs, doc=True)
@@ -88,8 +88,8 @@ with open("bert_score/example/docids.txt") as f:
     doc_ids = [line.strip() for line in f]
     
 # add contexts to reference and hypothesis texts
-cands = add_context(org_txt=cand, context=ref, docs=doc_ids)
-refs = add_context(org_txt=ref, context=ref, docs=doc_ids)
+cands = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token="</s>")
+refs = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token="</s>")
 
 # set doc=True to evaluate at the document level
 P, R, F1 = score(cands, refs, lang="en", verbose=True, doc=True)
