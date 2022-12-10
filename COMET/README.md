@@ -74,7 +74,7 @@ seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
 
 ## Reproduce
-To reproduce the results of the paper follow these [instructions](reporduce/README.md).
+TFollow the [instructions](reporduce/README.md) to reproduce the results from the paper.
 
 ## Paper
 
