@@ -99,6 +99,19 @@ To use another model set the flag `model_type=MODEL_TYPE` when calling `score` f
 ## Reproduce
 Follow the [instructions](reproduce/) to reproduce the results from the paper.
 
-## Related Publications
+## Paper
 
-- [BERTScore: Evaluating Text Generation with BERT](https://openreview.net/forum?id=SkeHuCVFDr)
+If you use the code in your work, please cite [Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric](https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf):
+
+```
+@inproceedings{easy_doc_mt
+    title = {Embarrassingly Easy Document-Level MT Metrics: How to Convert Any Pretrained Metric Into a Document-Level Metric},
+    author = {Vernikos, Giorgos and Thompson, Brian and Mathur, Prashant and Federico, Marcello},
+    booktitle = "Proceedings of the Seventh Conference on Machine Translation",
+    month = dec,
+    year = "2022",
+    address = "Abu Dhabi, United Arab Emirates",
+    publisher = "Association for Computational Linguistics",
+    url = "https://statmt.org/wmt22/pdf/2022.wmt-1.6.pdf",
+}
+```
