@@ -18,13 +18,13 @@ The current repository contains code that extends the original MT metrics to doc
 
 It is recommended to create an environment for this project 
 ```bash
-conda create -n doc-metrics-env python=3.8 anaconda
+conda create -n doc-metrics-env python=3.9
 conda activate doc-metrics-env
 ```
 
 ## Reproducibility
 
-In order to reproduce the reuslts of the paper, regarding the correlation with human annotations of our (or any other) metrics on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) we _strongly recommend_ using the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit.
+In order to reproduce the reuslts of the paper, regarding the correlation with human annotations of our (or any other) metrics on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) see the `reproduce` folder of the corresponding metric.
 
 ## Acknowledgments
 
