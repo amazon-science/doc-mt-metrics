@@ -28,15 +28,15 @@ To evaluate at the document level we need to know where the document boundaries 
 
 For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
 ```bash
-sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids
+sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids.ende
 ```
 
 ### Command Line usage
 
 Comet and comet-qe are run just as before, except we, add the `--doc` flag to the `comet-score` command:
 ```bash
-comet-score -s src.en -t hyp.de -r ref.de --doc docids --model wmt21-comet-mqm
-comet-score -s src.en -t hyp.de --doc docids --model wmt21-comet-qe-mqm
+comet-score -s src.en -t hyp.de -r ref.de --doc docids.ende --model wmt21-comet-mqm
+comet-score -s src.en -t hyp.de --doc docids.ende --model wmt21-comet-qe-mqm
 ```
 > Note: you can set `--gpus 0` to run on CPU.
 
@@ -51,7 +51,7 @@ from comet import download_model, load_from_checkpoint
 from add_context import add_context
 
 # load data files
-doc_ids = [x.strip() for x in open('docids', 'rt').readlines()]
+doc_ids = [x.strip() for x in open('docids.ende', 'rt').readlines()]
 src = [x.strip() for x in open('src.en', 'rt').readlines()]
 hyp = [x.strip() for x in open('hyp.de', 'rt').readlines()]
 ref = [x.strip() for x in open('ref.de', 'rt').readlines()]
