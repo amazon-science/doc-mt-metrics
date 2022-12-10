@@ -12,30 +12,29 @@ git clone https://github.com/amazon-science/doc-mt-metrics.git
 cd BERTScore
 pip install .
 ```
-## Scoring MT outputs:
 
-### Command Line usage:
-
-To score using the original, sentence-level BERTScore model:
+### Get some files to score
 ```bash
-bert-score -r ref.en -c hyp1.en --lang en
+sacrebleu -t wmt21 -l en-de --echo ref | head -n 20 > ref.de
+sacrebleu -t wmt21 -l en-de --echo ref | head -n 20 > hyp.de  # put your system output here
 ```
-To evaluate at the document level we need to know the number of documents per file. This can either be a list of strings where each string is a document name, i.e. `[doc1, doc1, doc1, doc2, doc2, doc3]`, or just a list of indices, i.e. `[1, 1, 1, 2, 3, 3]`. 
+To evaluate at the document level we need to know where the document boundaries are in the test set, so that we only use valid context. This is passed in as a file where each line contains a document ID.
 
 For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
 ```bash
-sacrebleu -t wmt21 -l en-de --echo docid > docid.en-de
+sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids.ende
 ```
-
 Next, we have to add context to each of the source, hypothesis and target files:
 ```bash
-python add_context.py --f1 ref.en --doc_ids docid.en-de
-python add_context.py --f1 hyp1.en --f2 ref.en --doc_ids docid.en-de
+python add_context.py --f1 ref.en --doc_ids docids.ende
+python add_context.py --f1 hyp1.en --f2 ref.en --doc_ids docids.ende
 ```
 > the window size can be changed by setting the `--ws` flag (default=2). 
 > If you don't want to overwrite the original files set the `--name` flag accordingly.
 
 (!) Note that we use the reference context for the hypothesis in the paper.
+
+### Command Line usage:
 
 To score using the document-level BERTScore simply add the `--doc` flag:
 ```bash
@@ -53,13 +52,13 @@ In order to use Doc-BERTScore simple simply add `doc=True` when calling the `sco
 ```python
 from bert_score import BERTScorer
 
-with open("bert_score/example/hyps.txt") as f:
+with open("hyp.de") as f:
     cands = [line.strip() for line in f]
 
-with open("bert_score/example/refs.txt") as f:
+with open("ref.de") as f:
     refs = [line.strip() for line in f]
     
-with open("bert_score/example/docids.txt") as f:
+with open("docids.ende") as f:
     doc_ids = [line.strip() for line in f]
 
 scorer = BERTScorer(lang="en", rescale_with_baseline=True)
@@ -78,13 +77,13 @@ In order to use Doc-BERTScore simple simply add `doc=True` when calling the `sco
 ```python
 from bert_score import score
 
-with open("bert_score/example/hyps.txt") as f:
+with open("hyp.de") as f:
     cands = [line.strip() for line in f]
 
-with open("bert_score/example/refs.txt") as f:
+with open("ref.de") as f:
     refs = [line.strip() for line in f]
 
-with open("bert_score/example/docids.txt") as f:
+with open("docids.ende") as f:
     doc_ids = [line.strip() for line in f]
     
 # add contexts to reference and hypothesis texts
@@ -97,6 +96,8 @@ P, R, F1 = score(cands, refs, lang="en", verbose=True, doc=True)
 
 To use another model set the flag `model_type=MODEL_TYPE` when calling `score` function.
 
+## Reproduce
+Follow the [instructions](reproduce/) to reproduce the results from the paper.
 
 ## Related Publications
 
