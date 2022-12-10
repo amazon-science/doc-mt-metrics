@@ -10,7 +10,7 @@ To run Doc-COMET you will need to develop locally:
 ```bash
 git clone https://github.com/amazon-science/doc-mt-metrics.git
 cd doc-mt-metrics/COMET
-conda create -n doc-metrics-env python=3.8 anaconda 
+conda create -n doc-metrics-env python=3.9 
 conda activate doc-metrics-env
 pip install --upgrade pip
 pip install -r requirements.txt
@@ -19,24 +19,24 @@ pip install -e .
 
 ### Get some files to score
 ```bash
-sacrebleu -t wmt21 -l de-en --echo src | head -n 20 > src.de
-sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > ref.en
-sacrebleu -t wmt21 -l de-en --echo ref | head -n 20 > hyp.en  # put your system output here
+sacrebleu -t wmt21 -l en-de --echo src | head -n 20 > src.en
+sacrebleu -t wmt21 -l en-de --echo ref | head -n 20 > ref.de
+sacrebleu -t wmt21 -l en-de --echo ref | head -n 20 > hyp.de  # put your system output here
 ```
 
 To evaluate at the document level we need to know where the document boundaries are in the test set, so that we only use valid context. This is passed in as a file where each line contains a document ID.
 
 For WMT test sets this can be obtained via [sacreBLEU](https://github.com/mjpost/sacrebleu):
 ```bash
-sacrebleu -t wmt21 -l de-en --echo docid | head -n 20 > docids
+sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids
 ```
 
 ### Command Line usage
 
 Comet and comet-qe are run just as before, except we, add the `--doc` flag to the `comet-score` command:
 ```bash
-comet-score -s src.de -t hyp.en -r ref.en --doc docids --model wmt21-comet-mqm
-comet-score -s src.de -t hyp.en --doc docids --model wmt21-comet-qe-mqm
+comet-score -s src.en -t hyp.de -r ref.de --doc docids --model wmt21-comet-mqm
+comet-score -s src.en -t hyp.de --doc docids --model wmt21-comet-qe-mqm
 ```
 > Note: you can set `--gpus 0` to run on CPU.
 
@@ -52,9 +52,9 @@ from add_context import add_context
 
 # load data files
 doc_ids = [x.strip() for x in open('docids', 'rt').readlines()]
-src = [x.strip() for x in open('src.de', 'rt').readlines()]
-hyp = [x.strip() for x in open('hyp.en', 'rt').readlines()]
-ref = [x.strip() for x in open('ref.en', 'rt').readlines()]
+src = [x.strip() for x in open('src.en', 'rt').readlines()]
+hyp = [x.strip() for x in open('hyp.de', 'rt').readlines()]
+ref = [x.strip() for x in open('ref.de', 'rt').readlines()]
 
 # load comet model
 model_path = download_model("wmt21-comet-mqm")
@@ -72,6 +72,9 @@ data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, ref, ref)]
 
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
+
+## Reproduce
+To reproduce the results of the paper follow these [instructions](reporduce/README.md).
 
 ## Paper
 
