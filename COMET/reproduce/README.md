@@ -9,5 +9,5 @@ mtme --download  # Puts ~1G of data into $HOME/.mt-metrics-eval.
 ```
 To obtain system-level scores of Doc-COMET(-QE) for the WMT21 testet run:
 ```bash
-python score_bertscore.py --campaign wmt21.news --lp en-de --doc --level sys
+python score_comet.py --campaign wmt21.news --lp en-de --doc --level sys
 ````
