@@ -1,13 +1,13 @@
 import torch
 from tqdm import tqdm
-from transformers import MBartTokenizer, MBartForConditionalGeneration, MBart50TokenizerFast, MBart50Tokenizer
+from transformers import MBartForConditionalGeneration, MBart50TokenizerFast, MBart50Tokenizer
 import torch.nn.functional as F
 import torch.nn as nn
 import numpy as np
 
 
 class MBARTPrism:
-    def __init__(self, src_lang, tgt_lang, checkpoint='facebook/mbart-large-cc25', device='cuda:0'):
+    def __init__(self, src_lang, tgt_lang, checkpoint='facebook/mbart-large-cc25', device='None'):
         # Set up model
         langs = ["ar_AR", "cs_CZ", "de_DE", "en_XX", "es_XX", "et_EE", "fi_FI", "fr_XX", "gu_IN", "hi_IN", "it_IT",
                  "ja_XX", "kk_KZ", "ko_KR", "lt_LT", "lv_LV", "my_MM", "ne_NP", "nl_XX", "ro_RO", "ru_RU", "si_LK",
@@ -15,11 +15,9 @@ class MBARTPrism:
         # , "pl_PL", "ta_IN"]
         src_lang = [l for l in langs if src_lang in l][0]
         tgt_lang = [l for l in langs if tgt_lang in l][0]
-        self.device = device
-        if "50" in checkpoint:
-            self.tokenizer = MBart50Tokenizer.from_pretrained(checkpoint, src_lang=src_lang, tgt_lang=tgt_lang)
-        else:
-            self.tokenizer = MBartTokenizer.from_pretrained(checkpoint, src_lang=src_lang, tgt_lang=tgt_lang)
+
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.tokenizer = MBart50Tokenizer.from_pretrained(checkpoint, src_lang=src_lang, tgt_lang=tgt_lang)
         self.model = MBartForConditionalGeneration.from_pretrained(checkpoint)
         self.model.eval()
         self.model.to(device)
@@ -28,7 +26,7 @@ class MBARTPrism:
         self.loss_fct = nn.NLLLoss(reduction='none', ignore_index=self.model.config.pad_token_id)
         self.lsm = nn.LogSoftmax(dim=1)
 
-    def score(self, cand, ref, batch_size, context, segment_scores=False):
+    def score(self, cand, ref, batch_size, doc, segment_scores=True):
         """ Score a batch of examples """
 
         if len(cand) != len(ref):
@@ -58,7 +56,7 @@ class MBARTPrism:
                                 max_length=self.tokenizer.model_max_length
                             )
                             tgt_len = [len(self.tokenizer(sent.split("</s>")[-1]).input_ids) for sent in tgt_list]
-                            if context:
+                            if doc:
                                 start_toks = [len(self.tokenizer(sent).input_ids) - tgt_len[i] for i, sent in
                                               enumerate(tgt_list)]
                             else:
@@ -92,7 +90,7 @@ class MBARTPrism:
         return sys_score
 
 
-    def score_src(self, src, tgt, batch_size, context, segment_scores=False):
+    def score_src(self, src, tgt, batch_size, doc, segment_scores=True):
         """ Score a batch of examples """
 
         if len(src) != len(tgt):
@@ -119,7 +117,7 @@ class MBARTPrism:
                             return_tensors='pt'
                         )
                         tgt_len = [len(self.tokenizer(sent.split("</s>")[-1]).input_ids) for sent in tgt_list]
-                        if context:
+                        if doc:
                             start_toks = [len(self.tokenizer(sent).input_ids) - tgt_len[i] for i, sent in
                                           enumerate(tgt_list)]
                         else:

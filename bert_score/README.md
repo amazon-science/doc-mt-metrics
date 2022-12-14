@@ -61,7 +61,7 @@ with open("ref.de") as f:
 with open("docids.ende") as f:
     doc_ids = [line.strip() for line in f]
 
-scorer = BERTScorer(lang="en", rescale_with_baseline=True)
+scorer = BERTScorer(lang="de", rescale_with_baseline=True)
 
 # add contexts to reference and hypothesis texts
 cands = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)

@@ -46,17 +46,14 @@ hyp = [x.strip() for x in open('hyp.de', 'rt').readlines()]
 ref = [x.strip() for x in open('ref.de', 'rt').readlines()]
 
 # load prism model
-model_path = download_model("wmt21-comet-mqm")
-model = load_from_checkpoint(model_path)
-
-# enable document-level evaluation
-model.set_document_level()
+model_path = "facebook/mbart-large-50"
+prism = MBARTPrism(checkpoint=model_path, src_lang="en", tgt_lang="de")
 
 # add contexts to reference and hypothesis texts
 hyp = add_context(orig_txt=hyp, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 
-seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
+seg_score = prism.score(cand=hyp, ref=ref, doc=True)
 ```
 
 ## Reproduce
