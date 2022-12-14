@@ -1,6 +1,8 @@
-# Doc-COMET(-QE)
+# Doc-Prism (mBART)
 
 This README describes how to use **Doc-Prism** an extension of the original Prism metric that can be used for document-level evaluation. 
+
+Contrary to the original implementation that used a multilingual MT model, we use [mBART-50](https://arxiv.org/abs/2008.00401), a multilingual language model that is pre-trained at the document level, to score the MT outputs.
 
 ## Installation
 
@@ -40,23 +42,19 @@ from add_context import add_context
 
 # load data files
 doc_ids = [x.strip() for x in open('docids.ende', 'rt').readlines()]
-src = [x.strip() for x in open('src.en', 'rt').readlines()]
 hyp = [x.strip() for x in open('hyp.de', 'rt').readlines()]
 ref = [x.strip() for x in open('ref.de', 'rt').readlines()]
 
-# load comet model
+# load prism model
 model_path = download_model("wmt21-comet-mqm")
 model = load_from_checkpoint(model_path)
 
 # enable document-level evaluation
 model.set_document_level()
 
-# add contexts to reference, source and hypothesis texts
-src = add_context(orig_txt=src, context=src, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
+# add contexts to reference and hypothesis texts
 hyp = add_context(orig_txt=hyp, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
-
-data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, ref, ref)]
 
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
