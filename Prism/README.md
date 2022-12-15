@@ -1,4 +1,4 @@
-# Doc-Prism (mBART)
+# Doc-Prism (mBART-50)
 
 This README describes how to use **Doc-Prism** an extension of the original Prism metric that can be used for document-level evaluation. 
 
@@ -7,15 +7,6 @@ Contrary to the original implementation that used a multilingual MT model, we us
 ## Installation
 
 This codebase is an implementation of the [Prism metric](https://github.com/thompsonb/prism) using the [Hugging Face Transformers](https://huggingface.co/docs/transformers/index) library. For a detailed presnetation of the BERTScore metric, including usage examples and instructions see the original documentation.
-
-To run Doc-Prism you will need to develop locally:
-```bash
-git clone https://github.com/amazon-science/doc-mt-metrics.git
-cd doc-mt-metrics/Prism
-conda create -n doc-metrics-env python=3.9 
-conda activate doc-metrics-env
-pip install -r requirements.txt
-```
 
 ### Get some files to score
 ```bash
@@ -34,7 +25,7 @@ sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids.ende
 
 ### Python usage:
 
-In order to use Doc-Prism with python simply add `model.set_document_level()` after loading the model.
+In order to use Doc-Prism with python simply add `doc=True` when calling the score function.
 
 ```python
 from comet import download_model, load_from_checkpoint
