@@ -14,7 +14,7 @@ The extended metrics outperform their sentence-level counterparts in about 85% o
 The current repository contains code that extends the original MT metrics to document level by providing the option to encode additional context. The code is presented as an extension of the corresponding original codebase. For information on how to use each metric see the corresponding README:
 * [COMET/COMET-QE](COMET/README.md) 
 * [BERTScore](bert_score/README.md)  
-* [Prism](prism//README.md)
+* [Prism](Prism//README.md)
 
 It is recommended to create an environment for this project 
 ```bash
