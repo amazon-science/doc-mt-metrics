@@ -22,7 +22,7 @@ def main(args):
     src = evs.src
     ref = evs.all_refs[evs.std_ref]
 
-    for cand, sysname in evs.sys_outputs.items():
+    for sysname, cand in evs.sys_outputs.items():
 
         if args.doc:
             doc_ids = [""] * len(src)

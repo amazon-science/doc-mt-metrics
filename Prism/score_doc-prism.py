@@ -16,13 +16,12 @@ def main(args):
 
     scores = {level: {} for level in [args.level]}
 
-    src = evs.src
     ref = evs.all_refs[evs.std_ref]
 
-    for cand, sysname in evs.sys_outputs.items():
+    for sysname, cand in evs.sys_outputs.items():
 
         if args.doc:
-            doc_ids = [""] * len(src)
+            doc_ids = [""] * len(ref)
             # get the document ids in a suitable format
             for doc_name, doc_bounds in evs.docs.items():
                 doc_start, doc_end = doc_bounds
