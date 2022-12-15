@@ -8,14 +8,16 @@ import numpy as np
 
 class MBARTPrism:
     def __init__(self, src_lang, tgt_lang, checkpoint='facebook/mbart-large-cc25', device='None'):
-        # Set up model
         langs = ["ar_AR", "cs_CZ", "de_DE", "en_XX", "es_XX", "et_EE", "fi_FI", "fr_XX", "gu_IN", "hi_IN", "it_IT",
                  "ja_XX", "kk_KZ", "ko_KR", "lt_LT", "lv_LV", "my_MM", "ne_NP", "nl_XX", "ro_RO", "ru_RU", "si_LK",
                  "tr_TR", "vi_VN", "zh_CN", "pl_PL", "ta_IN"]
         src_lang = [l for l in langs if src_lang in l][0]
         tgt_lang = [l for l in langs if tgt_lang in l][0]
 
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        else:
+            self.device = device
         self.tokenizer = MBart50Tokenizer.from_pretrained(checkpoint, src_lang=src_lang, tgt_lang=tgt_lang)
         self.model = MBartForConditionalGeneration.from_pretrained(checkpoint)
         self.model.eval()
@@ -54,7 +56,8 @@ class MBARTPrism:
                                 return_tensors='pt',
                                 max_length=self.tokenizer.model_max_length
                             )
-                            tgt_len = [len(self.tokenizer(sent.split("</s>")[-1]).input_ids) for sent in tgt_list]
+                            tgt_len = [len(self.tokenizer(sent.split(self.tokenizer.sep_token)[-1]).input_ids) for sent
+                                       in tgt_list]
                             if doc:
                                 start_toks = [len(self.tokenizer(sent).input_ids) - tgt_len[i] for i, sent in
                                               enumerate(tgt_list)]
@@ -65,8 +68,6 @@ class MBARTPrism:
                         src_mask = encoded_src['attention_mask'].to(self.device)
 
                         tgt_tokens = encoded_tgt['input_ids'].to(self.device)
-                        # tgt_mask = encoded_tgt['attention_mask']
-                        # tgt_len = tgt_mask.sum(dim=1).to(self.device)
 
                         output = self.model(
                             input_ids=src_tokens,
@@ -79,7 +80,6 @@ class MBARTPrism:
                         ppl = []
                         for i, s in enumerate(loss):
                             ppl.append(s[start_toks[i]:start_toks[i] + tgt_len[i] - 1].sum() / (tgt_len[i] - 1))
-                        # loss = loss.sum(dim=1) / tgt_len
                         curr_score_list = [-x.item() for x in ppl]
                         sent_scores[sent_idx] += curr_score_list
 

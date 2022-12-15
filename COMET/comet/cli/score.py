@@ -111,7 +111,12 @@ def score_command() -> None:
         default=False,
         help="Number of inference runs for each sample in MC Dropout.",
     )
-    parser.add_argument("--doc", type=Path_fr, help="File containing document IDs to evaluate at the document level.", default=None)
+    parser.add_argument(
+        "--doc",
+        type=Path_fr,
+        default=None,
+        help="File containing document IDs to evaluate at the document level.",
+    )
     parser.add_argument(
         "--seed_everything",
         help="Prediction seed.",
