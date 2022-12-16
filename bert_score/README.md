@@ -42,6 +42,7 @@ In order to use Doc-BERTScore simple simply add `doc=True` when calling the `sco
 
 ```python
 from bert_score import BERTScorer
+from add_context import add_context
 
 with open("hyp.de") as f:
     cands = [line.strip() for line in f]
@@ -52,11 +53,11 @@ with open("ref.de") as f:
 with open("docids.ende") as f:
     doc_ids = [line.strip() for line in f]
 
-scorer = BERTScorer(lang="de", rescale_with_baseline=True)
+scorer = BERTScorer(lang="de")
 
 # add contexts to reference and hypothesis texts
-cands = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
-refs = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
+cands = add_context(orig_txt=cands, context=refs, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
+refs = add_context(orig_txt=refs, context=refs, doc_ids=doc_ids, sep_token=scorer._tokenizer.sep_token)
 
 # set doc=True to evaluate at the document level
 P, R, F1 = scorer.score(cands, refs, doc=True)
@@ -67,6 +68,7 @@ In order to use Doc-BERTScore simple simply add `doc=True` when calling the `sco
 
 ```python
 from bert_score import score
+from add_context import add_context
 
 with open("hyp.de") as f:
     cands = [line.strip() for line in f]
@@ -78,11 +80,11 @@ with open("docids.ende") as f:
     doc_ids = [line.strip() for line in f]
     
 # add contexts to reference and hypothesis texts
-cands = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token="</s>")
-refs = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token="</s>")
+cands = add_context(orig_txt=cands, context=refs, doc_ids=doc_ids, sep_token="[SEP]")
+refs = add_context(orig_txt=refs, context=refs, doc_ids=doc_ids, sep_token="[SEP]")
 
 # set doc=True to evaluate at the document level
-P, R, F1 = score(cands, refs, lang="en", verbose=True, doc=True)
+P, R, F1 = score(cands, refs, lang="de", verbose=True, doc=True)
 ```
 
 To use another model set the flag `model_type=MODEL_TYPE` when calling `score` function.
