@@ -68,7 +68,7 @@ src = add_context(orig_txt=src, context=src, doc_ids=doc_ids, sep_token=model.en
 hyp = add_context(orig_txt=hyp, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
 
-data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, ref, ref)]
+data = [{"src": x, "mt": y, "ref": z} for x, y, z in zip(src, hyp, ref)]
 
 seg_scores, sys_score = model.predict(data, batch_size=8, gpus=1)
 ```
