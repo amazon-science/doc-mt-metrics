@@ -56,6 +56,7 @@ def main():
                 assert len(curr_ref) == len(cands), f"# of sentences in {ref_file} doesn't match the # of candidates"
                 if args.doc:
                     sep_token = "[SEP]" if args.lang != "en" else "</s>"
+                    sent_ref = curr_ref
                     curr_ref = add_context(orig_txt=curr_ref, context=curr_ref, doc_ids=doc_ids, sep_token=sep_token)
                 refs.append(curr_ref)
         refs = list(zip(*refs))
@@ -68,7 +69,7 @@ def main():
 
     if args.doc:
         print('Adding reference context to MT')
-        cands = add_context(orig_txt=cands, context=curr_ref, doc_ids=doc_ids, sep_token=sep_token)
+        cands = add_context(orig_txt=cands, context=sent_ref, doc_ids=doc_ids, sep_token=sep_token)
 
     all_preds, hash_code = bert_score.score(
         cands,

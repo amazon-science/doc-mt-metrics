@@ -210,9 +210,6 @@ def score_command() -> None:
     if not model.is_referenceless():
         with open(cfg.references(), encoding="utf-8") as fp:
             references = [line.strip() for line in fp.readlines()]
-            if cfg.doc:
-                print('Adding reference context to reference')
-                references = add_context(orig_txt=references, context=references, doc_ids=doc_ids)
             
     translations = []
     for path_fr in cfg.translations:
@@ -225,6 +222,8 @@ def score_command() -> None:
                 else:
                     print('Adding reference context to MT')
                     single_translation = add_context(orig_txt=single_translation, context=references, doc_ids=doc_ids)
+                    print('Adding reference context to reference')
+                    references = add_context(orig_txt=references, context=references, doc_ids=doc_ids)
 
             translations.append(single_translation)
 
@@ -237,6 +236,7 @@ def score_command() -> None:
             "ref": [references for _ in translations],
         }
 
+    print(data)
     if cfg.gpus > 1 and cfg.accelerator == "ddp":
         # Flatten all data to score across multiple GPUs
         for k, v in data.items():
