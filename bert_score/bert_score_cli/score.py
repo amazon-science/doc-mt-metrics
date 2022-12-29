@@ -4,7 +4,7 @@ import argparse
 import torch
 
 import bert_score
-
+from add_context import add_context
 
 def main():
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -34,9 +34,15 @@ def main():
     parser.add_argument(
         "-c", "--cand", type=str, required=True, help="candidate (system outputs) file path or a string",
     )
-    parser.add_argument("--doc", action="store_true", help="whether to evaluate at the document level")
+    parser.add_argument("--doc", type=str, default=None, help="File containing document IDs to evaluate at the document level.")
 
     args = parser.parse_args()
+
+    if args.doc:
+        print('Running at document level')
+        with open(args.doc, encoding="utf-8") as fp:
+            doc_ids = [line.strip() for line in fp.readlines()]
+            assert not args.idf, "do not support idf mode for document-level evaluation"
 
     if os.path.isfile(args.cand):
         with open(args.cand) as f:
@@ -48,6 +54,10 @@ def main():
             with open(ref_file) as f:
                 curr_ref = [line.strip() for line in f]
                 assert len(curr_ref) == len(cands), f"# of sentences in {ref_file} doesn't match the # of candidates"
+                if args.doc:
+                    sep_token = "[SEP]" if args.lang != "en" else "</s>"
+                    sent_ref = curr_ref
+                    curr_ref = add_context(orig_txt=curr_ref, context=curr_ref, doc_ids=doc_ids, sep_token=sep_token)
                 refs.append(curr_ref)
         refs = list(zip(*refs))
     elif os.path.isfile(args.ref[0]):
@@ -56,6 +66,10 @@ def main():
         cands = [args.cand]
         refs = [args.ref]
         assert not args.idf, "do not support idf mode for a single pair of sentences"
+
+    if args.doc:
+        print('Adding reference context to MT')
+        cands = add_context(orig_txt=cands, context=sent_ref, doc_ids=doc_ids, sep_token=sep_token)
 
     all_preds, hash_code = bert_score.score(
         cands,
@@ -70,7 +84,7 @@ def main():
         rescale_with_baseline=args.rescale_with_baseline,
         baseline_path=args.baseline_path,
         use_fast_tokenizer=args.use_fast_tokenizer,
-        doc = args.doc
+        doc=True if args.doc else False
     )
     avg_scores = [s.mean(dim=0) for s in all_preds]
     P = avg_scores[0].cpu().item()

@@ -1,17 +1,18 @@
-# Original Copyright (c) 2019 Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q. Weinberger, and Yoav Artzi.
-# Modifications Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
 import argparse
 import json
+import os
+from prism import MBARTPrism
 from add_context import add_context
-from bert_score import BERTScorer
 from mt_metrics_eval.data import EvalSet
 import numpy as np
 
 
+
 def main(args):
     evs = EvalSet(args.campaign, args.lp)
-    scorer = BERTScorer(lang=args.lp.split(".")[-1], rescale_with_baseline=False)
+
+    model_path = "facebook/mbart-large-50"
+    prism = MBARTPrism(checkpoint=model_path, src_lang=args.lp.split("-")[-1], tgt_lang=args.lp.split("-")[-1])
 
     scores = {level: {} for level in [args.level]}
 
@@ -27,12 +28,12 @@ def main(args):
                 doc_ids[doc_start:doc_end] = (doc_end - doc_start) * [doc_name]
 
             cand = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids,
-                               sep_token=scorer._tokenizer.sep_token)
+                               sep_token=prism.tokenizer.sep_token)
             ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids,
-                              sep_token=scorer._tokenizer.sep_token)
+                              sep_token=prism.tokenizer.sep_token)
 
-        P, R, F1 = scorer.score(cand, ref, context=args.doc)
-        seg_score = F1.cpu().numpy()
+        seg_score = prism.score(cand=cand, ref=ref, doc=args.doc, batch_size=2,
+                                        segment_scores=True)
 
         # keep scores only for the segments that have mqm annotations
         mqm_annot = [True] * len(seg_score)
@@ -44,7 +45,7 @@ def main(args):
             np.mean(np.array(seg_score)[mqm_annot]) if not args.level == 'sys' else seg_score]
 
     if args.save:
-        scores_file = "{}bertscore_scores.json".format("doc-" if args.doc else "")
+        scores_file = "{}prism_scores.json".format("doc-" if args.doc else "")
         with open(scores_file, 'w') as fp:
             json.dump(scores, fp)
 
@@ -56,7 +57,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Reproduce Doc-BERTScore scores from the paper.')
+    parser = argparse.ArgumentParser(description='Reproduce Doc-Prism (mBART-50) scores from the paper.')
     parser.add_argument('--campaign', choices=['wmt21.news', 'wmt21.tedtalks'], default='wmt21.news',
                         help='the wmt campaign to test on')
     parser.add_argument('--lp', choices=['en-de', 'zh-en', 'en-ru'], default='en-de',
