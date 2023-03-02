@@ -48,8 +48,8 @@ seg_score = prism.score(cand=hyp, ref=ref, doc=True)
 ```
 
 ## Reproduce
-To reproduce the results of the paper on the [WTM21 Metrics task](https://www.statmt.org/wmt21/metrics-task.html) data first install the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit
-and download the database.
+To reproduce the Doc-Prism results from the paper run the [score_doc-metrics.py](/score_doc-metrics.py) script with the flags `--model prism` and `--doc`.
+
 ```bash
 git clone https://github.com/google-research/mt-metrics-eval.git
 cd mt-metrics-eval
