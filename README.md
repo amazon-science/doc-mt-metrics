@@ -24,7 +24,7 @@ conda activate doc-metrics-env
 
 ## Reproducibility
 
-In order to reproduce the results of the paper, regarding the correlation with human annotations of document or sentence-level metrics on the test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) first install the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit
+In order to reproduce the results of the paper, regarding the correlation with human annotations of document or sentence-level metrics on the test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) first install the required packages for [BERTScore](/bert_score) and [COMET](/COMET) models. Next, install the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit
 and download the database.
 ```bash
 git clone https://github.com/google-research/mt-metrics-eval.git

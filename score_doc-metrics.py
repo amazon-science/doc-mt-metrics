@@ -1,8 +1,8 @@
 # Original Copyright (C) 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-from COMET.add_context import add_context
 import argparse
-from bert_score.scorer import BERTScorer
-from comet import download_model, load_from_checkpoint
+from bert_score.bert_score.scorer import BERTScorer
+from COMET.add_context import add_context
+from COMET.comet import download_model, load_from_checkpoint
 import json
 from mt_metrics_eval.data import EvalSet
 import numpy as np
