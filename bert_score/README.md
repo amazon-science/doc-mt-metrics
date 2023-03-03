@@ -90,7 +90,7 @@ P, R, F1 = score(cands, refs, lang="de", verbose=True, doc=True)
 To use another model set the flag `model_type=MODEL_TYPE` when calling `score` function.
 
 ## Reproduce
-Follow the [instructions](reproduce/) to reproduce the Doc-BERTScore results from the paper.
+To reproduce the Doc-BERTScore results from the paper run the [score_doc-metrics.py](/score_doc-metrics.py) script with the flags `--model bertscore` and `--doc`.
 
 ## Paper
 

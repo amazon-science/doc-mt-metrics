@@ -28,7 +28,7 @@ sacrebleu -t wmt21 -l en-de --echo docid | head -n 20 > docids.ende
 In order to use Doc-Prism with python simply add `doc=True` when calling the score function.
 
 ```python
-from comet import download_model, load_from_checkpoint
+from prism import MBARTPrism
 from add_context import add_context
 
 # load data files
@@ -41,15 +41,15 @@ model_path = "facebook/mbart-large-50"
 prism = MBARTPrism(checkpoint=model_path, src_lang="en", tgt_lang="de")
 
 # add contexts to reference and hypothesis texts
-hyp = add_context(orig_txt=hyp, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
-ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=model.encoder.tokenizer.sep_token)
+hyp = add_context(orig_txt=hyp, context=ref, doc_ids=doc_ids, sep_token=prism.encoder.tokenizer.sep_token)
+ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=prism.encoder.tokenizer.sep_token)
 
 seg_score = prism.score(cand=hyp, ref=ref, doc=True)
 ```
 
 ## Reproduce
-To reproduce the results of the paper on the [WTM21 Metrics task](https://www.statmt.org/wmt21/metrics-task.html) data first install the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit
-and download the database.
+To reproduce the Doc-Prism results from the paper run the [score_doc-metrics.py](/score_doc-metrics.py) script with the flags `--model prism` and `--doc`.
+
 ```bash
 git clone https://github.com/google-research/mt-metrics-eval.git
 cd mt-metrics-eval

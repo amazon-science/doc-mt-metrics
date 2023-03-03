@@ -24,8 +24,20 @@ conda activate doc-metrics-env
 
 ## Reproducibility
 
-In order to reproduce the reuslts of the paper, regarding the correlation with human annotations of our (or any other) metrics on the standard test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) see the `reproduce` folder of the corresponding metric.
-
+In order to reproduce the results of the paper, regarding the correlation with human annotations of document or sentence-level metrics on the test sets from the [WMT Metrics Shared Task](https://wmt-metrics-task.github.io/) first install the required packages for [BERTScore](/bert_score) and [COMET](/COMET) models. Next, install the [MT Metrics Eval](https://github.com/google-research/mt-metrics-eval) toolkit
+and download the database.
+```bash
+git clone https://github.com/google-research/mt-metrics-eval.git
+cd mt-metrics-eval
+pip install .
+alias mtme='python3 -m mt_metrics_eval.mtme'
+mtme --download  # Puts ~1G of data into $HOME/.mt-metrics-eval.
+```
+Then use the `score_doc-metrics.py` script to obtain the scores for the model, domain and language pair of your choice from the WMT21 test sets. 
+For example, to obtain system-level scores of Doc-COMET for the en-de language pair in the news domain, run:
+```bash
+python score_doc-metrics.py --campaign wmt21.news --model comet --lp en-de --level sys --doc
+````
 ## Acknowledgments
 
 We would like to thank the community for releasing their code! This repository contains code from [COMET](https://github.com/Unbabel/COMET), [BERTScore](https://github.com/Tiiiger/bert_score) and [Prism](https://github.com/thompsonb/prism) repositories.
